@@ -205,7 +205,7 @@
       }
     }
     
-    // Display a clear, kid-friendly explanation for multiplication.
+    // Display a clear, kid-friendly explanation for the current problem.
     function showHelp() {
       if (questionsCompleted >= totalQuestions) return;
       let helpText = "";
@@ -213,19 +213,16 @@
       if (currentOperator === "+") {
         helpText = `Step-by-Step for Addition:<br>
 1. Think of addition as putting numbers together.<br>
-2. For example, <strong>${currentNum1} + ${currentNum2}</strong> means start with ${currentNum1} and add ${currentNum2}.`;
+2. For <strong>${currentNum1} + ${currentNum2}</strong>, start with ${currentNum1} and then add ${currentNum2}.`;
       } else if (currentOperator === "-") {
-        const larger = Math.max(currentNum1, currentNum2);
-        const smaller = Math.min(currentNum1, currentNum2);
         helpText = `Step-by-Step for Subtraction:<br>
-1. Subtraction means taking away.<br>
-2. For example, if you have <strong>${larger}</strong> and you take away <strong>${smaller}</strong>, the answer is what remains.`;
+1. Subtraction is taking away.<br>
+2. If you have <strong>${currentNum1} - ${currentNum2}</strong> (or vice versa), imagine removing the smaller number from the larger one.`;
       } else if (currentOperator === "*") {
         helpText = `Step-by-Step for Multiplication:<br>
-1. Multiplication is just adding the same number many times.<br>
-2. For example, <strong>${currentNum1} × ${currentNum2}</strong> means add ${currentNum2} together ${currentNum1} times.<br>
-&nbsp;&nbsp;&nbsp;Write it as: ${currentNum2} + ${currentNum2} + ... (repeat ${currentNum1} times).<br>
-3. Then add those numbers to get the answer.`;
+1. Multiplication means adding the same number many times.<br>
+2. For <strong>${currentNum1} × ${currentNum2}</strong>, think of it as adding ${currentNum2} together ${currentNum1} times.<br>
+&nbsp;&nbsp;&nbsp;Example: 3 × 4 means 4 + 4 + 4 = 12.`;
       }
       
       document.getElementById("helpMessage").innerHTML = helpText;
@@ -233,7 +230,8 @@
       document.getElementById("moreHelpButton").style.display = "inline-block";
     }
     
-    // Provide an alternate, visual explanation for multiplication using a "bag" example.
+    // Provide an alternate, visual explanation.
+    // For multiplication, choose from several different examples.
     function showAlternateHelp() {
       if (questionsCompleted >= totalQuestions) return;
       let altHelpText = "";
@@ -243,15 +241,16 @@
 Imagine a number line. Start at <strong>${currentNum1}</strong> and move to the right by <strong>${currentNum2}</strong> steps. The number you land on is the answer.`;
       } else if (currentOperator === "-") {
         altHelpText = `Alternate Help for Subtraction:<br>
-Imagine you have <strong>${currentNum1}</strong> candies and you give away <strong>${currentNum2}</strong> one by one. Count what is left to find the answer.`;
+Imagine you have <strong>${currentNum1}</strong> candies and you give away <strong>${currentNum2}</strong> one by one. Count what remains to find the answer.`;
       } else if (currentOperator === "*") {
-        // Choose the smaller number as the number of groups for clarity.
-        let groups = Math.min(currentNum1, currentNum2);
-        let perGroup = Math.max(currentNum1, currentNum2);
-        altHelpText = `Alternate Help for Multiplication:<br>
-Imagine you have <strong>${groups}</strong> bags and each bag has <strong>${perGroup}</strong> candies.<br>
-Count the candies in one bag, then in two bags, three bags, and so on until you have counted all bags.<br>
-For example, if you have 7 bags of 15 candies, you count: 15, 30, 45, 60, 75, 90, 105. The final number is the answer!`;
+        // Create several alternative messages for multiplication and choose one at random.
+        let altHelpOptions = [
+          `Imagine you have <strong>${currentNum1}</strong> boxes and each box has <strong>${currentNum2}</strong> cookies. Count the cookies in each box: the first box gives you ${currentNum2}, the second box gives you ${currentNum2*2}, and so on until you reach ${currentNum1*currentNum2}.`,
+          `Picture this: There are <strong>${currentNum1}</strong> baskets and each basket holds <strong>${currentNum2}</strong> apples. Add the apples basket by basket to get a total of ${currentNum1*currentNum2}.`,
+          `Think of multiplication like rows of stars. If you have <strong>${currentNum1}</strong> rows with <strong>${currentNum2}</strong> stars in each row, count them row by row to find the total, which is ${currentNum1*currentNum2}.`
+        ];
+        let randomIndex = Math.floor(Math.random() * altHelpOptions.length);
+        altHelpText = `Alternate Help for Multiplication:<br>` + altHelpOptions[randomIndex];
       }
       
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
