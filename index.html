@@ -1,260 +1,243 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2113.65">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fun Math Practice for Kids</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff4500;
+    }
+    .scoreboard {
+      margin-bottom: 20px;
+    }
+    #progressContainer {
+      width: 80%;
+      background-color: #ddd;
+      border-radius: 10px;
+      margin: 10px auto;
+      height: 20px;
+      overflow: hidden;
+    }
+    #progressBar {
+      height: 100%;
+      width: 0;
+      background-color: #32cd32;
+    }
+    .problem-container {
+      background-color: #fffacd;
+      border: 2px solid #ffa500;
+      border-radius: 10px;
+      padding: 20px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    .input-container {
+      margin: 15px 0;
+    }
+    input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 150px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff4500;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background-color: #ff6347;
+    }
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    .message {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .help-message {
+      font-size: 16px;
+      color: #00008B;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Fun Math Practice for Kids&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #f0f8ff;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: 'Comic Sans MS', cursive, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #ff4500;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.scoreboard {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#progressContainer {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 80%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 10px auto;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#progressBar {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #32cd32;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.problem-container {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #fffacd;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 2px solid #ffa500;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: inline-block;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.input-container {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 15px 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input[type="number"] {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 150px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #ff4500;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button:hover {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #ff6347;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button:disabled {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background-color: #aaa;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: not-allowed;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.message {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.help-message {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #00008B;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Welcome to Fun Math Practice!&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;p&gt;Practice your math skills with interactive problems!&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="scoreboard"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="scoreDisplay"&gt;Score: 0&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="attemptsDisplay"&gt;Attempts: 0 / 10&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="progressContainer"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="progressBar"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="problem-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="problem"&gt;Press ENTER after typing your answer to begin!&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="input-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="answer"&gt;&lt;strong&gt;Your Answer:&lt;/strong&gt;&lt;/label&gt;&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="number" id="answer" placeholder="Type a number" autocomplete="off"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Help and Reset buttons --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="helpButton" onclick="showHelp()"&gt;Help&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="resetButton" onclick="resetSession()" disabled&gt;Reset Session&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="message" id="message"&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="help-message" id="helpMessage"&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">  </span></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let correctAnswer = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const totalAttempts = 10;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let attempts = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let score = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Variables to store current problem values for help hints</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentNum1 = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentNum2 = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentOperator = "";</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Update scoreboard and progress bar</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function updateScoreboard() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("scoreDisplay").innerText = `Score: ${score}`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("attemptsDisplay").innerText = `Attempts: ${attempts} / ${totalAttempts}`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const progressPercent = (attempts / totalAttempts) * 100;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("progressBar").style.width = progressPercent + "%";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Generate a new math problem and store its components for the Help feature</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function generateProblem() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (attempts &gt;= totalAttempts) return;</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Clear any previous messages and help hints</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("message").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("helpMessage").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("answer").value = "";</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Generate two random numbers between 1 and 20</p>
-<p class="p1"><span class="Apple-converted-space">      </span>currentNum1 = Math.floor(Math.random() * 20) + 1;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>currentNum2 = Math.floor(Math.random() * 20) + 1;</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Randomly choose an operator: +, -, or *</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const operators = ["+", "-", "*"];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>currentOperator = operators[Math.floor(Math.random() * operators.length)];</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>let problemText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (currentOperator === "+") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>correctAnswer = currentNum1 + currentNum2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>problemText = `${currentNum1} + ${currentNum2} = ?`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (currentOperator === "-") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Ensure non-negative result for subtraction</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (currentNum1 &lt; currentNum2) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>correctAnswer = currentNum2 - currentNum1;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>problemText = `${currentNum2} - ${currentNum1} = ?`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>correctAnswer = currentNum1 - currentNum2;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>problemText = `${currentNum1} - ${currentNum2} = ?`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (currentOperator === "*") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>correctAnswer = currentNum1 * currentNum2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>problemText = `${currentNum1} * ${currentNum2} = ?`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("problem").innerText = problemText;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Check the user's answer when ENTER is pressed</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function checkAnswer() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (attempts &gt;= totalAttempts) return;</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const answerInput = document.getElementById("answer");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const userAnswer = parseInt(answerInput.value);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const messageEl = document.getElementById("message");</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (isNaN(userAnswer)) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.innerText = "Please enter a valid number. <span class="s1">🤔</span>";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.style.color = "red";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>attempts++;</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (userAnswer === correctAnswer) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>score++;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.innerText = "Correct! Great job! <span class="s1">😊</span>";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.style.color = "green";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.innerText = "Oops! That's not correct. <span class="s1">😞</span>";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>messageEl.style.color = "red";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>updateScoreboard();</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (attempts &lt; totalAttempts) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(generateProblem, 1000);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>endSession();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Show a help hint based on the current problem</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function showHelp() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (attempts &gt;= totalAttempts) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>let helpText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (currentOperator === "+") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>helpText = `Hint: To add ${currentNum1} and ${currentNum2}, try counting up from one of the numbers.`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (currentOperator === "-") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>helpText = `Hint: For subtraction, think of it as "taking away". Look at the larger number and subtract the smaller number.`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (currentOperator === "*") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>helpText = `Hint: Multiplication is repeated addition. Try adding ${currentNum1} together ${currentNum2} times.`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("helpMessage").innerText = helpText;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// End the session, disable input, enable reset, and display a cool math fact.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function endSession() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("answer").disabled = true;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("helpButton").disabled = true;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("resetButton").disabled = false;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const messageEl = document.getElementById("message");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>messageEl.innerText = "Session complete! <span class="s1">🎉</span> Cool Fact: Math is like a superpower—its patterns and logic help us understand the universe, from nature’s spirals to the rhythms of music. Keep practicing and you'll unlock even more wonders!";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>messageEl.style.color = "#00008B";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("problem").innerText = "Well done! Press Reset to start a new session.";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Reset the session to start over.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function resetSession() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>attempts = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>score = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("answer").disabled = false;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("helpButton").disabled = false;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("resetButton").disabled = true;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>updateScoreboard();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("message").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("helpMessage").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>generateProblem();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Listen for the ENTER key on the input field</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("answer").addEventListener("keydown", function(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (e.key === "Enter") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>checkAnswer();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Generate the first problem when the page loads</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.onload = generateProblem;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <h1>Welcome to Fun Math Practice!</h1>
+  <p>Practice your math skills with interactive problems!</p>
+  
+  <div class="scoreboard">
+    <p id="scoreDisplay">Score: 0</p>
+    <p id="attemptsDisplay">Attempts: 0 / 10</p>
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
+  </div>
+  
+  <div class="problem-container">
+    <p id="problem">Press ENTER after typing your answer to begin!</p>
+    <div class="input-container">
+      <label for="answer"><strong>Your Answer:</strong></label><br>
+      <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
+    </div>
+    <!-- Help and Reset buttons -->
+    <button id="helpButton" onclick="showHelp()">Help</button>
+    <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
+    <p class="message" id="message"></p>
+    <p class="help-message" id="helpMessage"></p>
+  </div>
+  
+  <script>
+    let correctAnswer = 0;
+    const totalAttempts = 10;
+    let attempts = 0;
+    let score = 0;
+    // Variables to store current problem values for help hints
+    let currentNum1 = 0;
+    let currentNum2 = 0;
+    let currentOperator = "";
+    
+    // Update scoreboard and progress bar
+    function updateScoreboard() {
+      document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
+      document.getElementById("attemptsDisplay").innerText = `Attempts: ${attempts} / ${totalAttempts}`;
+      const progressPercent = (attempts / totalAttempts) * 100;
+      document.getElementById("progressBar").style.width = progressPercent + "%";
+    }
+    
+    // Generate a new math problem and store its components for the Help feature
+    function generateProblem() {
+      if (attempts >= totalAttempts) return;
+      
+      // Clear any previous messages and help hints
+      document.getElementById("message").innerText = "";
+      document.getElementById("helpMessage").innerText = "";
+      document.getElementById("answer").value = "";
+      
+      // Generate two random numbers between 1 and 20
+      currentNum1 = Math.floor(Math.random() * 20) + 1;
+      currentNum2 = Math.floor(Math.random() * 20) + 1;
+      
+      // Randomly choose an operator: +, -, or *
+      const operators = ["+", "-", "*"];
+      currentOperator = operators[Math.floor(Math.random() * operators.length)];
+      
+      let problemText = "";
+      if (currentOperator === "+") {
+        correctAnswer = currentNum1 + currentNum2;
+        problemText = `${currentNum1} + ${currentNum2} = ?`;
+      } else if (currentOperator === "-") {
+        // Ensure non-negative result for subtraction
+        if (currentNum1 < currentNum2) {
+          correctAnswer = currentNum2 - currentNum1;
+          problemText = `${currentNum2} - ${currentNum1} = ?`;
+        } else {
+          correctAnswer = currentNum1 - currentNum2;
+          problemText = `${currentNum1} - ${currentNum2} = ?`;
+        }
+      } else if (currentOperator === "*") {
+        correctAnswer = currentNum1 * currentNum2;
+        problemText = `${currentNum1} * ${currentNum2} = ?`;
+      }
+      
+      document.getElementById("problem").innerText = problemText;
+    }
+    
+    // Check the user's answer when ENTER is pressed
+    function checkAnswer() {
+      if (attempts >= totalAttempts) return;
+      
+      const answerInput = document.getElementById("answer");
+      const userAnswer = parseInt(answerInput.value);
+      const messageEl = document.getElementById("message");
+      
+      if (isNaN(userAnswer)) {
+        messageEl.innerText = "Please enter a valid number. 🤔";
+        messageEl.style.color = "red";
+        return;
+      }
+      
+      attempts++;
+      
+      if (userAnswer === correctAnswer) {
+        score++;
+        messageEl.innerText = "Correct! Great job! 😊";
+        messageEl.style.color = "green";
+      } else {
+        messageEl.innerText = "Oops! That's not correct. 😞";
+        messageEl.style.color = "red";
+      }
+      
+      updateScoreboard();
+      
+      if (attempts < totalAttempts) {
+        setTimeout(generateProblem, 1000);
+      } else {
+        endSession();
+      }
+    }
+    
+    // Show a help hint based on the current problem
+    function showHelp() {
+      if (attempts >= totalAttempts) return;
+      let helpText = "";
+      if (currentOperator === "+") {
+        helpText = `Hint: To add ${currentNum1} and ${currentNum2}, you can count up from one of the numbers. For example, add ${currentNum1} to itself ${currentNum2} times or vice versa.`;
+      } else if (currentOperator === "-") {
+        helpText = `Hint: For subtraction, think of it as "taking away". If the problem is "${document.getElementById("problem").innerText}", imagine you have ${currentNum1} items and you remove ${currentNum2} items (or vice versa), then count what remains.`;
+      } else if (currentOperator === "*") {
+        helpText = `Hint: Multiplication means repeated addition. For example, ${currentNum1} * ${currentNum2} is like adding ${currentNum1} together ${currentNum2} times.`;
+      }
+      document.getElementById("helpMessage").innerText = helpText;
+    }
+    
+    // End the session, disable input, enable reset, and display a cool math fact.
+    function endSession() {
+      document.getElementById("answer").disabled = true;
+      document.getElementById("helpButton").disabled = true;
+      document.getElementById("resetButton").disabled = false;
+      const messageEl = document.getElementById("message");
+      messageEl.innerText = "Session complete! 🎉 Cool Fact: Math is like a superpower—its patterns and logic help us understand the universe, from nature’s spirals to the rhythms of music. Keep practicing and you'll unlock even more wonders!";
+      messageEl.style.color = "#00008B";
+      document.getElementById("problem").innerText = "Well done! Press Reset to start a new session.";
+    }
+    
+    // Reset the session to start over.
+    function resetSession() {
+      attempts = 0;
+      score = 0;
+      document.getElementById("answer").disabled = false;
+      document.getElementById("helpButton").disabled = false;
+      document.getElementById("resetButton").disabled = true;
+      updateScoreboard();
+      document.getElementById("message").innerText = "";
+      document.getElementById("helpMessage").innerText = "";
+      generateProblem();
+    }
+    
+    // Listen for the ENTER key on the input field
+    document.getElementById("answer").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+    
+    // Generate the first problem when the page loads
+    window.onload = generateProblem;
+  </script>
 </body>
 </html>
