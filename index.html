@@ -16,6 +16,10 @@
     }
     .scoreboard {
       margin-bottom: 20px;
+      font-size: 1.2em;
+    }
+    #timeDisplay {
+      font-weight: bold;
     }
     #progressContainer {
       width: 80%;
@@ -27,8 +31,9 @@
     }
     #progressBar {
       height: 100%;
-      width: 0;
+      width: 100%; /* start full, will decrease with time */
       background-color: #32cd32;
+      transition: background-color 0.5s, width 1s;
     }
     .problem-container {
       background-color: #fffacd;
@@ -38,12 +43,17 @@
       display: inline-block;
       margin-top: 20px;
     }
+    #problem {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
     .input-container {
       margin: 15px 0;
     }
     input[type="number"] {
       padding: 10px;
-      font-size: 16px;
+      font-size: 18px;
       width: 150px;
       text-align: center;
     }
@@ -82,11 +92,12 @@
 </head>
 <body>
   <h1>Welcome to Fun Math Practice!</h1>
-  <p>Practice your math skills with interactive problems!</p>
+  <p>Practice your math skills with interactive problems for 15 minutes!</p>
   
   <div class="scoreboard">
     <p id="scoreDisplay">Score: 0</p>
-    <p id="questionDisplay">Question: 0 / 10</p>
+    <p id="questionDisplay">Questions: 0</p>
+    <p id="timeDisplay">Time Left: 15:00</p>
     <div id="progressContainer">
       <div id="progressBar"></div>
     </div>
@@ -108,32 +119,69 @@
   </div>
   
   <script>
+    // Session settings
+    const sessionDuration = 15 * 60; // 15 minutes in seconds
+    let remainingTime = sessionDuration;
+    let timerInterval;
+
+    // Session state
     let correctAnswer = 0;
-    let totalQuestions = 10;
     let questionsCompleted = 0;
     let questionAttempts = 0; // Up to 3 attempts per question
     let score = 0;
-    // Variables to store current problem values for help hints
+    // Store current problem values for help hints
     let currentNum1 = 0;
     let currentNum2 = 0;
     let currentOperator = "";
     
-    // Update the scoreboard and progress bar
+    // Returns an interpolated color between green and red based on ratio (1 = full time left, 0 = time's up)
+    function getProgressColor(ratio) {
+      const startColor = { r: 50, g: 205, b: 50 }; // green (#32cd32)
+      const endColor = { r: 255, g: 0, b: 0 };      // red (#FF0000)
+      let r = Math.round(startColor.r + (endColor.r - startColor.r) * (1 - ratio));
+      let g = Math.round(startColor.g + (endColor.g - startColor.g) * (1 - ratio));
+      let b = Math.round(startColor.b + (endColor.b - startColor.b) * (1 - ratio));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    // Update the timer display and progress bar
+    function updateTimeDisplay() {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
+      const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+      document.getElementById("timeDisplay").innerText = `Time Left: ${minutes}:${formattedSeconds}`;
+      
+      const timePercent = (remainingTime / sessionDuration) * 100;
+      const progressBar = document.getElementById("progressBar");
+      progressBar.style.width = timePercent + "%";
+      
+      // Update progress bar color from green (full time) to red (time's up)
+      progressBar.style.backgroundColor = getProgressColor(remainingTime / sessionDuration);
+    }
+    
+    // Start the 15-minute session timer
+    function startTimer() {
+      updateTimeDisplay();
+      timerInterval = setInterval(() => {
+        remainingTime--;
+        updateTimeDisplay();
+        if (remainingTime <= 0) {
+          clearInterval(timerInterval);
+          endSession();
+        }
+      }, 1000);
+    }
+    
+    // Update scoreboard (score and number of questions attempted)
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
-      document.getElementById("questionDisplay").innerText = `Question: ${questionsCompleted} / ${totalQuestions}`;
-      const progressPercent = (questionsCompleted / totalQuestions) * 100;
-      document.getElementById("progressBar").style.width = progressPercent + "%";
+      document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
     }
     
     // Generate a new math problem and reset per-question attempts and help messages
     function generateProblem() {
-      if (questionsCompleted >= totalQuestions) {
-        endSession();
-        return;
-      }
+      if (remainingTime <= 0) return;
       
-      // Clear previous messages, help hints, and reset the input and attempts for this question
       document.getElementById("message").innerText = "";
       document.getElementById("helpMessage").innerHTML = "";
       document.getElementById("altHelpMessage").innerHTML = "";
@@ -141,11 +189,9 @@
       document.getElementById("moreHelpButton").style.display = "none";
       questionAttempts = 0;
       
-      // Generate two random numbers between 1 and 20
       currentNum1 = Math.floor(Math.random() * 20) + 1;
       currentNum2 = Math.floor(Math.random() * 20) + 1;
       
-      // Randomly choose an operator: +, -, or *
       const operators = ["+", "-", "*"];
       currentOperator = operators[Math.floor(Math.random() * operators.length)];
       
@@ -171,7 +217,7 @@
     
     // Check the user's answer when ENTER is pressed
     function checkAnswer() {
-      if (questionsCompleted >= totalQuestions) return;
+      if (remainingTime <= 0) return;
       
       const answerInput = document.getElementById("answer");
       const userAnswer = parseInt(answerInput.value);
@@ -189,7 +235,7 @@
         messageEl.style.color = "green";
         questionsCompleted++;
         updateScoreboard();
-        setTimeout(generateProblem, 1500);
+        setTimeout(generateProblem, 1000);
       } else {
         questionAttempts++;
         if (questionAttempts < 3) {
@@ -200,86 +246,101 @@
           messageEl.style.color = "red";
           questionsCompleted++;
           updateScoreboard();
-          setTimeout(generateProblem, 2000);
+          setTimeout(generateProblem, 1500);
         }
       }
     }
     
     // Display a clear, kid-friendly explanation for the current problem.
     function showHelp() {
-      if (questionsCompleted >= totalQuestions) return;
+      if (remainingTime <= 0) return;
       let helpText = "";
       
       if (currentOperator === "+") {
-        helpText = `Step-by-Step for Addition:<br>
-1. Think of addition as putting numbers together.<br>
-2. For <strong>${currentNum1} + ${currentNum2}</strong>, start with ${currentNum1} and then add ${currentNum2}.`;
+        helpText = `Addition Help:<br>
+Imagine you have a pile of ${currentNum1} and then another pile of ${currentNum2}. Put them together to see the total.`;
       } else if (currentOperator === "-") {
-        helpText = `Step-by-Step for Subtraction:<br>
-1. Subtraction is taking away.<br>
-2. If you have <strong>${currentNum1} - ${currentNum2}</strong> (or vice versa), imagine removing the smaller number from the larger one.`;
+        helpText = `Subtraction Help:<br>
+Imagine you have ${currentNum1} candies and you give away ${currentNum2} one by one. Count the candies left.`;
       } else if (currentOperator === "*") {
-        helpText = `Step-by-Step for Multiplication:<br>
-1. Multiplication means adding the same number many times.<br>
-2. For <strong>${currentNum1} × ${currentNum2}</strong>, think of it as adding ${currentNum2} together ${currentNum1} times.<br>
-&nbsp;&nbsp;&nbsp;Example: 3 × 4 means 4 + 4 + 4 = 12.`;
+        helpText = `Multiplication Help:<br>
+Think of multiplication as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine having ${currentNum1} groups with ${currentNum2} items in each group. Add up all the items group by group.`;
       }
       
       document.getElementById("helpMessage").innerHTML = helpText;
-      // Reveal the More Help button for an alternate explanation
       document.getElementById("moreHelpButton").style.display = "inline-block";
     }
     
-    // Provide an alternate, visual explanation.
-    // For multiplication, choose from several different examples.
+    // Provide an alternate, visual explanation that randomly picks one example.
     function showAlternateHelp() {
-      if (questionsCompleted >= totalQuestions) return;
+      if (remainingTime <= 0) return;
       let altHelpText = "";
       
       if (currentOperator === "+") {
-        altHelpText = `Alternate Help for Addition:<br>
-Imagine a number line. Start at <strong>${currentNum1}</strong> and move to the right by <strong>${currentNum2}</strong> steps. The number you land on is the answer.`;
+        altHelpText = `Alternate Addition Help:<br>
+Imagine a number line. Start at ${currentNum1} and move right by ${currentNum2} steps. The final number is the total.`;
       } else if (currentOperator === "-") {
-        altHelpText = `Alternate Help for Subtraction:<br>
-Imagine you have <strong>${currentNum1}</strong> candies and you give away <strong>${currentNum2}</strong> one by one. Count what remains to find the answer.`;
+        altHelpText = `Alternate Subtraction Help:<br>
+Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count the cookies left.`;
       } else if (currentOperator === "*") {
-        // Create several alternative messages for multiplication and choose one at random.
-        let altHelpOptions = [
-          `Imagine you have <strong>${currentNum1}</strong> boxes and each box has <strong>${currentNum2}</strong> cookies. Count the cookies in each box: the first box gives you ${currentNum2}, the second box gives you ${currentNum2*2}, and so on until you reach ${currentNum1*currentNum2}.`,
-          `Picture this: There are <strong>${currentNum1}</strong> baskets and each basket holds <strong>${currentNum2}</strong> apples. Add the apples basket by basket to get a total of ${currentNum1*currentNum2}.`,
-          `Think of multiplication like rows of stars. If you have <strong>${currentNum1}</strong> rows with <strong>${currentNum2}</strong> stars in each row, count them row by row to find the total, which is ${currentNum1*currentNum2}.`
+        const altHelpOptions = [
+          `Imagine ${currentNum1} baskets with ${currentNum2} apples in each. Add the apples basket by basket.`,
+          `Picture ${currentNum1} rows of stars with ${currentNum2} stars in each row. Count all the stars together.`,
+          `Think of ${currentNum1} groups of balloons, each group having ${currentNum2} balloons. Count the balloons group by group.`
         ];
         let randomIndex = Math.floor(Math.random() * altHelpOptions.length);
-        altHelpText = `Alternate Help for Multiplication:<br>` + altHelpOptions[randomIndex];
+        altHelpText = `Alternate Multiplication Help:<br>` + altHelpOptions[randomIndex];
       }
       
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
-    // End the session, disable input and help buttons, enable reset, and show a cool math fact.
+    // Log the session details (date, score, questions attempted) in localStorage
+    function logSession() {
+      const sessionLog = {
+        date: new Date().toLocaleString(),
+        score: score,
+        questionsAttempted: questionsCompleted
+      };
+      let logs = JSON.parse(localStorage.getItem('sessionLogs')) || [];
+      logs.push(sessionLog);
+      localStorage.setItem('sessionLogs', JSON.stringify(logs));
+      console.log("Session logged:", sessionLog);
+    }
+    
+    // End the session: stop timer, disable input, log the session, and show final message.
     function endSession() {
+      clearInterval(timerInterval);
       document.getElementById("answer").disabled = true;
       document.getElementById("helpButton").disabled = true;
       document.getElementById("moreHelpButton").disabled = true;
       document.getElementById("resetButton").disabled = false;
       const messageEl = document.getElementById("message");
-      messageEl.innerHTML = "Session complete! 🎉<br>Cool Fact: Learning these tricks makes math faster and more fun!";
+      messageEl.innerHTML = `Session complete! 🎉<br>
+Your score: ${score}<br>
+Questions attempted: ${questionsCompleted}<br>
+Cool Fact: Practice makes you faster at math!`;
       messageEl.style.color = "#00008B";
-      document.getElementById("problem").innerText = "Well done! Press Reset to start a new session.";
+      document.getElementById("problem").innerText = "Time's up! Press Reset to start a new session.";
+      logSession();
     }
     
-    // Reset the session to start over.
+    // Reset the session: reinitialize state, timer, and UI elements.
     function resetSession() {
       questionsCompleted = 0;
       score = 0;
+      remainingTime = sessionDuration;
       document.getElementById("answer").disabled = false;
       document.getElementById("helpButton").disabled = false;
       document.getElementById("moreHelpButton").disabled = false;
       document.getElementById("resetButton").disabled = true;
       updateScoreboard();
+      updateTimeDisplay();
       document.getElementById("message").innerText = "";
       document.getElementById("helpMessage").innerHTML = "";
       document.getElementById("altHelpMessage").innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
       generateProblem();
     }
     
@@ -290,8 +351,11 @@ Imagine you have <strong>${currentNum1}</strong> candies and you give away <stro
       }
     });
     
-    // Generate the first problem when the page loads
-    window.onload = generateProblem;
+    // Start the session on page load
+    window.onload = function() {
+      startTimer();
+      generateProblem();
+    };
   </script>
 </body>
 </html>
