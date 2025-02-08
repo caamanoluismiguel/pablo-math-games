@@ -16,6 +16,54 @@
     }
     a { text-decoration: none; }
     
+    /* Modal Styles */
+    #startModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #modalContent {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    #modalContent h2 {
+      margin-top: 0;
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+    }
+    #modalContent input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 1em;
+      margin: 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #modalContent button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #FFA500;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #modalContent button:hover {
+      background-color: #e69500;
+    }
+    
     /* Top Section (Hero) */
     #topSection {
       background-color: #F4C37D; /* Warm yellow-orange */
@@ -53,6 +101,13 @@
     .scoreboard {
       margin-bottom: 20px;
       font-size: 1.2em;
+      text-align: center;
+    }
+    #playerDisplay {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #FFA500;
     }
     #timeDisplay {
       font-weight: bold;
@@ -83,9 +138,11 @@
       font-size: 2em;
       font-weight: bold;
       margin-bottom: 15px;
+      text-align: center;
     }
     .input-container {
       margin: 15px 0;
+      text-align: center;
     }
     input[type="number"] {
       padding: 10px;
@@ -145,6 +202,17 @@
   </style>
 </head>
 <body>
+  <!-- Start Modal -->
+  <div id="startModal">
+    <div id="modalContent">
+      <h2>Welcome to FunMath4Pablo.com!</h2>
+      <p>Please enter your name to start:</p>
+      <input type="text" id="playerInput" placeholder="Your name">
+      <br>
+      <button onclick="startSession()">Start</button>
+    </div>
+  </div>
+  
   <!-- Top Section / Hero -->
   <section id="topSection">
     <div class="logo">√</div>
@@ -155,6 +223,7 @@
   <!-- Bottom Section / Interactive Content -->
   <section id="bottomSection">
     <div class="scoreboard">
+      <p id="playerDisplay"></p>
       <p id="scoreDisplay">Score: 0</p>
       <p id="questionDisplay">Questions: 0</p>
       <p id="timeDisplay">Time Left: 15:00</p>
@@ -184,6 +253,9 @@
   </section>
   
   <script>
+    // Global variable to store player's name
+    let playerName = "";
+    
     // Session settings
     const sessionDuration = 15 * 60; // 15 minutes in seconds
     let remainingTime = sessionDuration;
@@ -235,13 +307,14 @@
       }, 1000);
     }
     
-    // Update scoreboard (score and questions attempted)
+    // Update scoreboard (score, questions attempted) and display player's name.
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
+      document.getElementById("playerDisplay").innerText = `Welcome, ${playerName}!`;
     }
     
-    // Generate a new math problem and reset per-question state
+    // Generate a new math problem and reset per-question state.
     function generateProblem() {
       if (remainingTime <= 0) return;
       
@@ -278,7 +351,7 @@
       document.getElementById("problem").innerText = problemText;
     }
     
-    // Check the user's answer when ENTER is pressed
+    // Check the user's answer when ENTER is pressed.
     function checkAnswer() {
       if (remainingTime <= 0) return;
       
@@ -358,10 +431,11 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
-    // Log the session details (date, score, questions attempted) in localStorage.
+    // Log the session details (date, player's name, score, questions attempted) in localStorage.
     function logSession() {
       const sessionLog = {
         date: new Date().toLocaleString(),
+        player: playerName,
         score: score,
         questionsAttempted: questionsCompleted
       };
@@ -400,6 +474,7 @@ Cool Fact: Practice makes you faster at math!`;
         } else {
           logs.forEach(log => {
             displayHTML += `<p><strong>Date:</strong> ${log.date}<br>
+<strong>Player:</strong> ${log.player}<br>
 <strong>Score:</strong> ${log.score}<br>
 <strong>Questions Attempted:</strong> ${log.questionsAttempted}</p><hr>`;
           });
@@ -432,6 +507,20 @@ Cool Fact: Practice makes you faster at math!`;
       generateProblem();
     }
     
+    // Function to start the session after the user enters their name.
+    function startSession() {
+      const input = document.getElementById("playerInput");
+      if (input.value.trim() === "") {
+        alert("Please enter your name to start.");
+        return;
+      }
+      playerName = input.value.trim();
+      updateScoreboard();
+      document.getElementById("startModal").style.display = "none";
+      startTimer();
+      generateProblem();
+    }
+    
     // Listen for the ENTER key on the answer input field.
     document.getElementById("answer").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
@@ -439,11 +528,7 @@ Cool Fact: Practice makes you faster at math!`;
       }
     });
     
-    // Start the session when the page loads.
-    window.onload = function() {
-      startTimer();
-      generateProblem();
-    };
+    // Do not automatically start the session on page load; wait for user input in the modal.
   </script>
 </body>
 </html>
