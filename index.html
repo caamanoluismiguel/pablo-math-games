@@ -111,14 +111,14 @@
     let correctAnswer = 0;
     let totalQuestions = 10;
     let questionsCompleted = 0;
-    let questionAttempts = 0; // Tracks attempts for the current question (max 3)
+    let questionAttempts = 0; // Up to 3 attempts per question
     let score = 0;
-    // Store current problem values for help hints
+    // Variables to store current problem values for help hints
     let currentNum1 = 0;
     let currentNum2 = 0;
     let currentOperator = "";
     
-    // Update scoreboard and progress bar
+    // Update the scoreboard and progress bar
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Question: ${questionsCompleted} / ${totalQuestions}`;
@@ -205,60 +205,55 @@
       }
     }
     
-    // Display a detailed, step-by-step help hint based on the current problem.
-    // Also reveals the "More Help" button.
+    // Display a clear, kid-friendly explanation for multiplication.
     function showHelp() {
       if (questionsCompleted >= totalQuestions) return;
       let helpText = "";
       
       if (currentOperator === "+") {
         helpText = `Step-by-Step for Addition:<br>
-1. Start with the first number: <strong>${currentNum1}</strong>.<br>
-2. Count up one by one until you've added <strong>${currentNum2}</strong> numbers.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Example: For <strong>${currentNum1} + ${currentNum2}</strong>, start at ${currentNum1}, then ${currentNum1 + 1}, ${currentNum1 + 2}, etc.<br>
-3. The final number you reach is the answer.`;
+1. Think of addition as putting numbers together.<br>
+2. For example, <strong>${currentNum1} + ${currentNum2}</strong> means start with ${currentNum1} and add ${currentNum2}.`;
       } else if (currentOperator === "-") {
         const larger = Math.max(currentNum1, currentNum2);
         const smaller = Math.min(currentNum1, currentNum2);
         helpText = `Step-by-Step for Subtraction:<br>
-1. Identify the larger number (<strong>${larger}</strong>) and the smaller number (<strong>${smaller}</strong>).<br>
-2. Count backwards from the larger number until you've subtracted <strong>${smaller}</strong>.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Example: For <strong>${larger} - ${smaller}</strong>, count: ${larger - 1}, ${larger - 2}, etc.<br>
-3. The final number is the answer.`;
+1. Subtraction means taking away.<br>
+2. For example, if you have <strong>${larger}</strong> and you take away <strong>${smaller}</strong>, the answer is what remains.`;
       } else if (currentOperator === "*") {
         helpText = `Step-by-Step for Multiplication:<br>
-1. Understand that <strong>${currentNum1} * ${currentNum2}</strong> means adding one number repeatedly.<br>`;
-        if (currentNum1 === 2 || currentNum2 === 2) {
-          const other = currentNum1 === 2 ? currentNum2 : currentNum1;
-          helpText += `2a. <strong>Trick:</strong> Multiplying by 2 is just doubling the other number. For example, ${currentNum1} * ${currentNum2} equals double ${other} (i.e. ${other * 2}).<br>`;
-        }
-        helpText += `2. Write it out as repeated addition. For example, add ${currentNum1} together ${currentNum2} times (or vice versa).<br>
-3. The total sum is your answer.`;
+1. Multiplication is just adding the same number many times.<br>
+2. For example, <strong>${currentNum1} × ${currentNum2}</strong> means add ${currentNum2} together ${currentNum1} times.<br>
+&nbsp;&nbsp;&nbsp;Write it as: ${currentNum2} + ${currentNum2} + ... (repeat ${currentNum1} times).<br>
+3. Then add those numbers to get the answer.`;
       }
+      
       document.getElementById("helpMessage").innerHTML = helpText;
       // Reveal the More Help button for an alternate explanation
       document.getElementById("moreHelpButton").style.display = "inline-block";
     }
     
-    // Provide an alternate, creative explanation for the current problem.
+    // Provide an alternate, visual explanation for multiplication using a "bag" example.
     function showAlternateHelp() {
       if (questionsCompleted >= totalQuestions) return;
       let altHelpText = "";
       
       if (currentOperator === "+") {
         altHelpText = `Alternate Help for Addition:<br>
-Imagine a number line. Place a marker on <strong>${currentNum1}</strong> and take <strong>${currentNum2}</strong> steps to the right. Each step adds one. The spot where you land is the answer.`;
+Imagine a number line. Start at <strong>${currentNum1}</strong> and move to the right by <strong>${currentNum2}</strong> steps. The number you land on is the answer.`;
       } else if (currentOperator === "-") {
         altHelpText = `Alternate Help for Subtraction:<br>
-Visualize a countdown. If you have <strong>${currentNum1}</strong> items and lose <strong>${currentNum2}</strong> of them, remove items one by one until you see what remains.`;
+Imagine you have <strong>${currentNum1}</strong> candies and you give away <strong>${currentNum2}</strong> one by one. Count what is left to find the answer.`;
       } else if (currentOperator === "*") {
+        // Choose the smaller number as the number of groups for clarity.
+        let groups = Math.min(currentNum1, currentNum2);
+        let perGroup = Math.max(currentNum1, currentNum2);
         altHelpText = `Alternate Help for Multiplication:<br>
-Think of multiplication as grouping. If you have ${currentNum1} groups of ${currentNum2} items (or vice versa), draw each group and then count all the items together.<br>`;
-        if (currentNum1 === 2 || currentNum2 === 2) {
-          const other = currentNum1 === 2 ? currentNum2 : currentNum1;
-          altHelpText += `Remember: Multiplying by 2 is just doubling the number: double ${other} is ${other * 2}.`;
-        }
+Imagine you have <strong>${groups}</strong> bags and each bag has <strong>${perGroup}</strong> candies.<br>
+Count the candies in one bag, then in two bags, three bags, and so on until you have counted all bags.<br>
+For example, if you have 7 bags of 15 candies, you count: 15, 30, 45, 60, 75, 90, 105. The final number is the answer!`;
       }
+      
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
@@ -269,7 +264,7 @@ Think of multiplication as grouping. If you have ${currentNum1} groups of ${curr
       document.getElementById("moreHelpButton").disabled = true;
       document.getElementById("resetButton").disabled = false;
       const messageEl = document.getElementById("message");
-      messageEl.innerHTML = "Session complete! 🎉<br>Cool Fact: Math is like a superpower—its patterns and logic help us understand the universe. Keep practicing to unlock even more wonders!";
+      messageEl.innerHTML = "Session complete! 🎉<br>Cool Fact: Learning these tricks makes math faster and more fun!";
       messageEl.style.color = "#00008B";
       document.getElementById("problem").innerText = "Well done! Press Reset to start a new session.";
     }
