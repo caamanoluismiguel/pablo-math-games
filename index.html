@@ -88,6 +88,18 @@
       margin-left: auto;
       margin-right: auto;
     }
+    /* Style for the log display area; initially hidden */
+    #logDisplay {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -109,14 +121,18 @@
       <label for="answer"><strong>Your Answer:</strong></label><br>
       <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
     </div>
-    <!-- Help buttons and Reset button -->
+    <!-- Help buttons, Reset button, and Log toggle button -->
     <button id="helpButton" onclick="showHelp()">Help</button>
     <button id="moreHelpButton" onclick="showAlternateHelp()" style="display: none;">More Help</button>
     <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
+    <button id="logsButton" onclick="toggleSessionLogs()">Show Session Logs</button>
     <p class="message" id="message"></p>
     <p class="help-message" id="helpMessage"></p>
     <p class="help-message" id="altHelpMessage"></p>
   </div>
+  
+  <!-- Div to display session logs -->
+  <div id="logDisplay"></div>
   
   <script>
     // Session settings
@@ -129,12 +145,12 @@
     let questionsCompleted = 0;
     let questionAttempts = 0; // Up to 3 attempts per question
     let score = 0;
-    // Store current problem values for help hints
+    // Variables to store current problem values for help hints
     let currentNum1 = 0;
     let currentNum2 = 0;
     let currentOperator = "";
     
-    // Returns an interpolated color between green and red based on ratio (1 = full time left, 0 = time's up)
+    // Returns an interpolated color between green and red based on ratio (1 = full time, 0 = time's up)
     function getProgressColor(ratio) {
       const startColor = { r: 50, g: 205, b: 50 }; // green (#32cd32)
       const endColor = { r: 255, g: 0, b: 0 };      // red (#FF0000)
@@ -154,8 +170,6 @@
       const timePercent = (remainingTime / sessionDuration) * 100;
       const progressBar = document.getElementById("progressBar");
       progressBar.style.width = timePercent + "%";
-      
-      // Update progress bar color from green (full time) to red (time's up)
       progressBar.style.backgroundColor = getProgressColor(remainingTime / sessionDuration);
     }
     
@@ -258,13 +272,13 @@
       
       if (currentOperator === "+") {
         helpText = `Addition Help:<br>
-Imagine you have a pile of ${currentNum1} and then another pile of ${currentNum2}. Put them together to see the total.`;
+Imagine you have a pile of ${currentNum1} and another pile of ${currentNum2}. Put them together to find the total.`;
       } else if (currentOperator === "-") {
         helpText = `Subtraction Help:<br>
-Imagine you have ${currentNum1} candies and you give away ${currentNum2} one by one. Count the candies left.`;
+Imagine you have ${currentNum1} candies and you give away ${currentNum2} one by one. Count what remains.`;
       } else if (currentOperator === "*") {
         helpText = `Multiplication Help:<br>
-Think of multiplication as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine having ${currentNum1} groups with ${currentNum2} items in each group. Add up all the items group by group.`;
+Think of multiplication as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine you have ${currentNum1} groups with ${currentNum2} items in each. Add all the items together to get the total.`;
       }
       
       document.getElementById("helpMessage").innerHTML = helpText;
@@ -278,15 +292,15 @@ Think of multiplication as making groups. For <strong>${currentNum1} × ${curren
       
       if (currentOperator === "+") {
         altHelpText = `Alternate Addition Help:<br>
-Imagine a number line. Start at ${currentNum1} and move right by ${currentNum2} steps. The final number is the total.`;
+Imagine a number line. Start at ${currentNum1} and move right by ${currentNum2} steps. The number you land on is the total.`;
       } else if (currentOperator === "-") {
         altHelpText = `Alternate Subtraction Help:<br>
-Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count the cookies left.`;
+Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count what remains.`;
       } else if (currentOperator === "*") {
         const altHelpOptions = [
-          `Imagine ${currentNum1} baskets with ${currentNum2} apples in each. Add the apples basket by basket.`,
-          `Picture ${currentNum1} rows of stars with ${currentNum2} stars in each row. Count all the stars together.`,
-          `Think of ${currentNum1} groups of balloons, each group having ${currentNum2} balloons. Count the balloons group by group.`
+          `Imagine ${currentNum1} baskets with ${currentNum2} apples in each. Count them one basket at a time.`,
+          `Picture ${currentNum1} rows of stars with ${currentNum2} stars in each row. Add up all the stars.`,
+          `Think of ${currentNum1} groups of balloons, each with ${currentNum2} balloons. Count all the balloons group by group.`
         ];
         let randomIndex = Math.floor(Math.random() * altHelpOptions.length);
         altHelpText = `Alternate Multiplication Help:<br>` + altHelpOptions[randomIndex];
@@ -325,6 +339,32 @@ Cool Fact: Practice makes you faster at math!`;
       logSession();
     }
     
+    // Toggle display of session logs.
+    function toggleSessionLogs() {
+      let logDiv = document.getElementById("logDisplay");
+      let logsButton = document.getElementById("logsButton");
+      if (logDiv.style.display === "none" || logDiv.innerHTML.trim() === "") {
+        // Build the log display content
+        let logs = JSON.parse(localStorage.getItem('sessionLogs')) || [];
+        let displayHTML = "<h2>Session Logs</h2>";
+        if (logs.length === 0) {
+          displayHTML += "<p>No logs available.</p>";
+        } else {
+          logs.forEach(log => {
+            displayHTML += `<p><strong>Date:</strong> ${log.date}<br>
+<strong>Score:</strong> ${log.score}<br>
+<strong>Questions Attempted:</strong> ${log.questionsAttempted}</p><hr>`;
+          });
+        }
+        logDiv.innerHTML = displayHTML;
+        logDiv.style.display = "block";
+        logsButton.textContent = "Hide Session Logs";
+      } else {
+        logDiv.style.display = "none";
+        logsButton.textContent = "Show Session Logs";
+      }
+    }
+    
     // Reset the session: reinitialize state, timer, and UI elements.
     function resetSession() {
       questionsCompleted = 0;
@@ -344,14 +384,14 @@ Cool Fact: Practice makes you faster at math!`;
       generateProblem();
     }
     
-    // Listen for the ENTER key on the input field to automatically check the answer
+    // Listen for the ENTER key on the input field to automatically check the answer.
     document.getElementById("answer").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         checkAnswer();
       }
     });
     
-    // Start the session on page load
+    // Start the session on page load.
     window.onload = function() {
       startTimer();
       generateProblem();
