@@ -3,16 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fun Math Practice for Kids</title>
+  <title>FunMath4Pablo.com</title>
+  <!-- Import Montserrat font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    /* Global Styles */
     body {
-      background-color: #f0f8ff;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      text-align: center;
-      padding: 20px;
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      background: #fff;
     }
-    h1 {
-      color: #ff4500;
+    a { text-decoration: none; }
+    
+    /* Top Section (Hero) */
+    #topSection {
+      background-color: #F4C37D; /* Warm yellow-orange */
+      color: #000;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 1s ease-in;
+    }
+    #topSection .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 2em;
+      font-weight: bold;
+    }
+    #topSection h1 {
+      margin: 0;
+      font-size: 3em;
+      font-weight: bold;
+    }
+    #topSection p {
+      font-size: 1.5em;
+      margin: 20px 0 0 0;
+      font-style: italic;
+    }
+    
+    /* Bottom Section (Interactive Content) */
+    #bottomSection {
+      background-color: #333333; /* Dark background */
+      color: white;
+      padding: 40px 20px;
+      animation: fadeIn 1s ease-in;
     }
     .scoreboard {
       margin-bottom: 20px;
@@ -23,7 +59,7 @@
     }
     #progressContainer {
       width: 80%;
-      background-color: #ddd;
+      background-color: #555;
       border-radius: 10px;
       margin: 10px auto;
       height: 20px;
@@ -31,17 +67,17 @@
     }
     #progressBar {
       height: 100%;
-      width: 100%; /* start full, will decrease with time */
+      width: 100%; /* starts full */
       background-color: #32cd32;
       transition: background-color 0.5s, width 1s;
     }
     .problem-container {
-      background-color: #fffacd;
-      border: 2px solid #ffa500;
+      background-color: #444;
+      border: 2px solid #FFA500;
       border-radius: 10px;
       padding: 20px;
-      display: inline-block;
-      margin-top: 20px;
+      margin: 20px auto;
+      max-width: 600px;
     }
     #problem {
       font-size: 2em;
@@ -56,101 +92,114 @@
       font-size: 18px;
       width: 150px;
       text-align: center;
+      border: none;
+      border-radius: 5px;
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #ff4500;
-      color: white;
+      background-color: #FFA500;
+      color: #000;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       margin: 10px;
     }
     button:hover {
-      background-color: #ff6347;
+      background-color: #e69500;
     }
     button:disabled {
       background-color: #aaa;
       cursor: not-allowed;
     }
-    .message {
+    .message, .help-message {
       font-size: 18px;
       font-weight: bold;
       margin-top: 10px;
     }
     .help-message {
-      font-size: 16px;
-      color: #00008B;
-      margin-top: 10px;
       text-align: left;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 10px auto;
+      color: #FFD700; /* Light gold for contrast */
     }
-    /* Style for the log display area; initially hidden */
+    /* Log Display Area */
     #logDisplay {
       margin-top: 20px;
       text-align: left;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-      background: #eee;
+      background: #222;
       padding: 10px;
       border-radius: 5px;
       display: none;
+      color: white;
+    }
+    
+    /* Fade In Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Fun Math Practice!</h1>
-  <p>Practice your math skills with interactive problems for 15 minutes!</p>
+  <!-- Top Section / Hero -->
+  <section id="topSection">
+    <div class="logo">√</div>
+    <h1>FunMath4Pablo.com ꒰(˶• ᴗ •˶)꒱</h1>
+    <p>"So, whether you eat or drink, or whatever you do, do it all for the glory of God." – 1 Corinthians 10:31</p>
+  </section>
   
-  <div class="scoreboard">
-    <p id="scoreDisplay">Score: 0</p>
-    <p id="questionDisplay">Questions: 0</p>
-    <p id="timeDisplay">Time Left: 15:00</p>
-    <div id="progressContainer">
-      <div id="progressBar"></div>
+  <!-- Bottom Section / Interactive Content -->
+  <section id="bottomSection">
+    <div class="scoreboard">
+      <p id="scoreDisplay">Score: 0</p>
+      <p id="questionDisplay">Questions: 0</p>
+      <p id="timeDisplay">Time Left: 15:00</p>
+      <div id="progressContainer">
+        <div id="progressBar"></div>
+      </div>
     </div>
-  </div>
-  
-  <div class="problem-container">
-    <p id="problem">Press ENTER after typing your answer to begin!</p>
-    <div class="input-container">
-      <label for="answer"><strong>Your Answer:</strong></label><br>
-      <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
+    
+    <div class="problem-container">
+      <p id="problem">Press ENTER after typing your answer to begin!</p>
+      <div class="input-container">
+        <label for="answer"><strong>Your Answer:</strong></label><br>
+        <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
+      </div>
+      <!-- Help, More Help, Reset, and Logs Toggle Buttons -->
+      <button id="helpButton" onclick="showHelp()">Help</button>
+      <button id="moreHelpButton" onclick="showAlternateHelp()" style="display: none;">More Help</button>
+      <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
+      <button id="logsButton" onclick="toggleSessionLogs()">Show Session Logs</button>
+      <p class="message" id="message"></p>
+      <p class="help-message" id="helpMessage"></p>
+      <p class="help-message" id="altHelpMessage"></p>
     </div>
-    <!-- Help buttons, Reset button, and Log toggle button -->
-    <button id="helpButton" onclick="showHelp()">Help</button>
-    <button id="moreHelpButton" onclick="showAlternateHelp()" style="display: none;">More Help</button>
-    <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
-    <button id="logsButton" onclick="toggleSessionLogs()">Show Session Logs</button>
-    <p class="message" id="message"></p>
-    <p class="help-message" id="helpMessage"></p>
-    <p class="help-message" id="altHelpMessage"></p>
-  </div>
-  
-  <!-- Div to display session logs -->
-  <div id="logDisplay"></div>
+    
+    <!-- Div to display session logs -->
+    <div id="logDisplay"></div>
+  </section>
   
   <script>
     // Session settings
     const sessionDuration = 15 * 60; // 15 minutes in seconds
     let remainingTime = sessionDuration;
     let timerInterval;
-
-    // Session state
+    
+    // Session state variables
     let correctAnswer = 0;
     let questionsCompleted = 0;
     let questionAttempts = 0; // Up to 3 attempts per question
     let score = 0;
-    // Variables to store current problem values for help hints
+    // Variables for current problem values
     let currentNum1 = 0;
     let currentNum2 = 0;
     let currentOperator = "";
     
-    // Returns an interpolated color between green and red based on ratio (1 = full time, 0 = time's up)
+    // Returns an interpolated color between green and red based on ratio (1 = full time left)
     function getProgressColor(ratio) {
       const startColor = { r: 50, g: 205, b: 50 }; // green (#32cd32)
       const endColor = { r: 255, g: 0, b: 0 };      // red (#FF0000)
@@ -186,13 +235,13 @@
       }, 1000);
     }
     
-    // Update scoreboard (score and number of questions attempted)
+    // Update scoreboard (score and questions attempted)
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
     }
     
-    // Generate a new math problem and reset per-question attempts and help messages
+    // Generate a new math problem and reset per-question state
     function generateProblem() {
       if (remainingTime <= 0) return;
       
@@ -265,42 +314,42 @@
       }
     }
     
-    // Display a clear, kid-friendly explanation for the current problem.
+    // Show a simple, kid-friendly help explanation for the current problem.
     function showHelp() {
       if (remainingTime <= 0) return;
       let helpText = "";
       
       if (currentOperator === "+") {
         helpText = `Addition Help:<br>
-Imagine you have a pile of ${currentNum1} and another pile of ${currentNum2}. Put them together to find the total.`;
+Imagine you have one pile with ${currentNum1} items and another with ${currentNum2} items. Put them together to get the total.`;
       } else if (currentOperator === "-") {
         helpText = `Subtraction Help:<br>
-Imagine you have ${currentNum1} candies and you give away ${currentNum2} one by one. Count what remains.`;
+Imagine you have ${currentNum1} items and you remove ${currentNum2} of them. The items left are your answer.`;
       } else if (currentOperator === "*") {
         helpText = `Multiplication Help:<br>
-Think of multiplication as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine you have ${currentNum1} groups with ${currentNum2} items in each. Add all the items together to get the total.`;
+Think of it as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine having ${currentNum1} groups with ${currentNum2} items in each. Add all the items together.`;
       }
       
       document.getElementById("helpMessage").innerHTML = helpText;
       document.getElementById("moreHelpButton").style.display = "inline-block";
     }
     
-    // Provide an alternate, visual explanation that randomly picks one example.
+    // Show an alternate visual explanation chosen at random.
     function showAlternateHelp() {
       if (remainingTime <= 0) return;
       let altHelpText = "";
       
       if (currentOperator === "+") {
         altHelpText = `Alternate Addition Help:<br>
-Imagine a number line. Start at ${currentNum1} and move right by ${currentNum2} steps. The number you land on is the total.`;
+Imagine a number line starting at ${currentNum1}; move right by ${currentNum2} steps. The number you land on is your total.`;
       } else if (currentOperator === "-") {
         altHelpText = `Alternate Subtraction Help:<br>
 Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count what remains.`;
       } else if (currentOperator === "*") {
         const altHelpOptions = [
-          `Imagine ${currentNum1} baskets with ${currentNum2} apples in each. Count them one basket at a time.`,
-          `Picture ${currentNum1} rows of stars with ${currentNum2} stars in each row. Add up all the stars.`,
-          `Think of ${currentNum1} groups of balloons, each with ${currentNum2} balloons. Count all the balloons group by group.`
+          `Imagine ${currentNum1} baskets, each with ${currentNum2} apples. Count the apples basket by basket.`,
+          `Picture ${currentNum1} rows of stars with ${currentNum2} stars each. Add up the stars in each row.`,
+          `Think of ${currentNum1} groups of balloons, each holding ${currentNum2} balloons. Count them group by group.`
         ];
         let randomIndex = Math.floor(Math.random() * altHelpOptions.length);
         altHelpText = `Alternate Multiplication Help:<br>` + altHelpOptions[randomIndex];
@@ -309,7 +358,7 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
-    // Log the session details (date, score, questions attempted) in localStorage
+    // Log the session details (date, score, questions attempted) in localStorage.
     function logSession() {
       const sessionLog = {
         date: new Date().toLocaleString(),
@@ -322,7 +371,7 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       console.log("Session logged:", sessionLog);
     }
     
-    // End the session: stop timer, disable input, log the session, and show final message.
+    // End the session: stop timer, disable inputs, log session, and show final message.
     function endSession() {
       clearInterval(timerInterval);
       document.getElementById("answer").disabled = true;
@@ -334,7 +383,7 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
 Your score: ${score}<br>
 Questions attempted: ${questionsCompleted}<br>
 Cool Fact: Practice makes you faster at math!`;
-      messageEl.style.color = "#00008B";
+      messageEl.style.color = "#FFD700";
       document.getElementById("problem").innerText = "Time's up! Press Reset to start a new session.";
       logSession();
     }
@@ -344,7 +393,6 @@ Cool Fact: Practice makes you faster at math!`;
       let logDiv = document.getElementById("logDisplay");
       let logsButton = document.getElementById("logsButton");
       if (logDiv.style.display === "none" || logDiv.innerHTML.trim() === "") {
-        // Build the log display content
         let logs = JSON.parse(localStorage.getItem('sessionLogs')) || [];
         let displayHTML = "<h2>Session Logs</h2>";
         if (logs.length === 0) {
@@ -384,14 +432,14 @@ Cool Fact: Practice makes you faster at math!`;
       generateProblem();
     }
     
-    // Listen for the ENTER key on the input field to automatically check the answer.
+    // Listen for the ENTER key on the answer input field.
     document.getElementById("answer").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         checkAnswer();
       }
     });
     
-    // Start the session on page load.
+    // Start the session when the page loads.
     window.onload = function() {
       startTimer();
       generateProblem();
