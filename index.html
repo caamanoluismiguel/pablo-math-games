@@ -18,6 +18,39 @@
     }
     a { text-decoration: none; }
     
+    /* Unified Button Style for all action buttons (including modal) */
+    button, #modalContent button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #FFA500;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover, #modalContent button:hover {
+      background-color: #e69500;
+    }
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    
+    /* Specific Overrides */
+    #submitButton {
+      background-color: #00ffbb;
+    }
+    #submitButton:hover {
+      background-color: #00e6ac;
+    }
+    #resetButton {
+      background-color: gray;
+    }
+    #resetButton:hover {
+      background-color: darkgray;
+    }
+    
     /* Modal Styles */
     #startModal {
       position: fixed;
@@ -39,12 +72,7 @@
       max-width: 400px;
       width: 90%;
     }
-    #modalContent h2 {
-      margin-top: 0;
-      font-size: 2em;
-      font-weight: bold;
-      color: #333;
-    }
+    /* Removed separate styling for modal button so it uses the unified style above */
     #modalContent input[type="text"] {
       width: 80%;
       padding: 10px;
@@ -52,18 +80,6 @@
       margin: 20px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
-    }
-    #modalContent button {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #FFA500;
-      color: #000;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #modalContent button:hover {
-      background-color: #e69500;
     }
     
     /* Top Section (Hero) */
@@ -154,22 +170,9 @@
       border: none;
       border-radius: 5px;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #FFA500;
-      color: #000;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    button:hover {
-      background-color: #e69500;
-    }
-    button:disabled {
-      background-color: #aaa;
-      cursor: not-allowed;
+    /* The Submit Answer Button is always visible */
+    #submitButton {
+      display: inline-block;
     }
     .message, .help-message {
       font-size: 18px;
@@ -193,6 +196,18 @@
       padding: 10px;
       border-radius: 5px;
       display: none;
+      color: white;
+    }
+    /* Leaderboard Area */
+    #leaderboard {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #222;
+      padding: 10px;
+      border-radius: 5px;
       color: white;
     }
     
@@ -232,6 +247,8 @@
       <div id="progressContainer">
         <div id="progressBar"></div>
       </div>
+      <!-- Achievement Badge -->
+      <p id="achievement" style="font-size:1.2em; color:#FFD700;"></p>
     </div>
     
     <div class="problem-container">
@@ -240,7 +257,9 @@
         <label for="answer"><strong>Your Answer:</strong></label><br>
         <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
       </div>
-      <!-- Help, More Help, Reset, and Logs Toggle Buttons -->
+      <!-- Always-visible Submit Button -->
+      <button id="submitButton" onclick="checkAnswer()">Submit Answer</button>
+      <!-- Other Buttons -->
       <button id="helpButton" onclick="showHelp()">Help</button>
       <button id="moreHelpButton" onclick="showAlternateHelp()" style="display: none;">More Help</button>
       <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
@@ -250,13 +269,15 @@
       <p class="help-message" id="altHelpMessage"></p>
     </div>
     
-    <!-- Div to display session logs -->
+    <!-- Div to display session logs and leaderboard -->
     <div id="logDisplay"></div>
+    <div id="leaderboard"></div>
   </section>
   
   <script>
-    // Global variable to store player's name
+    // Global variable to store player's name and consecutive correct count
     let playerName = "";
+    let consecutiveCorrect = 0;
     
     // Session settings
     const sessionDuration = 15 * 60; // 15 minutes in seconds
@@ -309,11 +330,28 @@
       }, 1000);
     }
     
-    // Update scoreboard (score and questions attempted) and display player's name.
+    // Update scoreboard (score, questions attempted, player's name, and achievement badge)
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
       document.getElementById("playerDisplay").innerText = `Welcome, ${playerName}!`;
+      // Show achievement badge if 10 consecutive correct answers achieved.
+      if (consecutiveCorrect >= 10) {
+        document.getElementById("achievement").innerText = "🏆 Achievement Unlocked: 10 in a Row!";
+      } else {
+        document.getElementById("achievement").innerText = "";
+      }
+    }
+    
+    // Adaptive difficulty: determines the number range based on consecutive correct answers.
+    function getNumberRange() {
+      if (consecutiveCorrect >= 10) {
+        return 100; // range: 1 to 100
+      } else if (consecutiveCorrect >= 5) {
+        return 50;  // range: 1 to 50
+      } else {
+        return 20;  // range: 1 to 20
+      }
     }
     
     // Generate a new math problem and reset per-question state.
@@ -327,8 +365,9 @@
       document.getElementById("moreHelpButton").style.display = "none";
       questionAttempts = 0;
       
-      currentNum1 = Math.floor(Math.random() * 20) + 1;
-      currentNum2 = Math.floor(Math.random() * 20) + 1;
+      const maxNumber = getNumberRange();
+      currentNum1 = Math.floor(Math.random() * maxNumber) + 1;
+      currentNum2 = Math.floor(Math.random() * maxNumber) + 1;
       
       const operators = ["+", "-", "*"];
       currentOperator = operators[Math.floor(Math.random() * operators.length)];
@@ -353,7 +392,7 @@
       document.getElementById("problem").innerText = problemText;
     }
     
-    // Check the user's answer when ENTER is pressed.
+    // Check the user's answer when ENTER or the "Submit Answer" button is pressed.
     function checkAnswer() {
       if (remainingTime <= 0) return;
       
@@ -369,6 +408,7 @@
       
       if (userAnswer === correctAnswer) {
         score++;
+        consecutiveCorrect++;
         messageEl.innerText = "Correct! Great job! 😊";
         messageEl.style.color = "green";
         questionsCompleted++;
@@ -376,6 +416,7 @@
         setTimeout(generateProblem, 1000);
       } else {
         questionAttempts++;
+        consecutiveCorrect = 0; // Reset consecutive count on mistake
         if (questionAttempts < 3) {
           messageEl.innerText = `Incorrect. Try again! (${questionAttempts} of 3 attempts used) 😞`;
           messageEl.style.color = "red";
@@ -447,24 +488,25 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       console.log("Session logged:", sessionLog);
     }
     
-    // End the session: stop timer, disable inputs, log session, and show final message.
-    function endSession() {
-      clearInterval(timerInterval);
-      document.getElementById("answer").disabled = true;
-      document.getElementById("helpButton").disabled = true;
-      document.getElementById("moreHelpButton").disabled = true;
-      document.getElementById("resetButton").disabled = false;
-      const messageEl = document.getElementById("message");
-      messageEl.innerHTML = `Session complete! 🎉<br>
-Your score: ${score}<br>
-Questions attempted: ${questionsCompleted}<br>
-Cool Fact: Practice makes you faster at math!`;
-      messageEl.style.color = "#FFD700";
-      document.getElementById("problem").innerText = "Time's up! Press Reset to start a new session.";
-      logSession();
+    // Build a local leaderboard from session logs (sorted by score descending).
+    function buildLeaderboard() {
+      let logs = JSON.parse(localStorage.getItem('sessionLogs')) || [];
+      logs.sort((a, b) => b.score - a.score || b.questionsAttempted - a.questionsAttempted);
+      let displayHTML = "<h2>Local Leaderboard</h2>";
+      if (logs.length === 0) {
+        displayHTML += "<p>No leaderboard data available.</p>";
+      } else {
+        logs.slice(0, 5).forEach(log => {
+          displayHTML += `<p><strong>Player:</strong> ${log.player}<br>
+<strong>Date:</strong> ${log.date}<br>
+<strong>Score:</strong> ${log.score}<br>
+<strong>Questions:</strong> ${log.questionsAttempted}</p><hr>`;
+        });
+      }
+      return displayHTML;
     }
     
-    // Toggle display of session logs.
+    // Toggle display of session logs and leaderboard.
     function toggleSessionLogs() {
       let logDiv = document.getElementById("logDisplay");
       let logsButton = document.getElementById("logsButton");
@@ -478,9 +520,10 @@ Cool Fact: Practice makes you faster at math!`;
             displayHTML += `<p><strong>Date:</strong> ${log.date}<br>
 <strong>Player:</strong> ${log.player}<br>
 <strong>Score:</strong> ${log.score}<br>
-<strong>Questions Attempted:</strong> ${log.questionsAttempted}</p><hr>`;
+<strong>Questions:</strong> ${log.questionsAttempted}</p><hr>`;
           });
         }
+        displayHTML += buildLeaderboard();
         logDiv.innerHTML = displayHTML;
         logDiv.style.display = "block";
         logsButton.textContent = "Hide Session Logs";
@@ -494,6 +537,7 @@ Cool Fact: Practice makes you faster at math!`;
     function resetSession() {
       questionsCompleted = 0;
       score = 0;
+      consecutiveCorrect = 0;
       remainingTime = sessionDuration;
       document.getElementById("answer").disabled = false;
       document.getElementById("helpButton").disabled = false;
@@ -530,7 +574,9 @@ Cool Fact: Practice makes you faster at math!`;
       }
     });
     
-    // Do not automatically start the session on page load; wait for user input in the modal.
+    // The "Submit Answer" button already calls checkAnswer() on click.
+    // The session starts only after the user clicks "Start" in the modal.
   </script>
 </body>
 </html>
+
