@@ -54,7 +54,7 @@
       border-radius: 5px;
     }
     
-    /* Unified Button Style */
+    /* Unified Button Style for all action buttons */
     button, #modalContent button {
       padding: 10px 20px;
       font-size: 16px;
@@ -246,14 +246,14 @@
     </div>
   </div>
   
-  <!-- Top Section / Hero -->
+  <!-- Top Section (Hero) -->
   <section id="topSection">
     <div class="logo">√</div>
     <h1>FunMath4Pablo.com ꒰(˶• ᴗ •˶)꒱</h1>
     <p>"So, whether you eat or drink, or whatever you do, do it all for the glory of God." – 1 Corinthians 10:31</p>
   </section>
   
-  <!-- Bottom Section / Interactive Content -->
+  <!-- Bottom Section (Interactive Content) -->
   <section id="bottomSection">
     <div class="scoreboard">
       <p id="playerDisplay"></p>
@@ -295,9 +295,10 @@
   </section>
   
   <script>
-    // Global variable to store player's name and consecutive correct count
+    // Global variables for player's name, consecutive correct count, and max consecutive correct achieved
     let playerName = "";
     let consecutiveCorrect = 0;
+    let maxConsecutive = 0;
     
     // Session settings
     const sessionDuration = 15 * 60; // 15 minutes in seconds
@@ -350,20 +351,22 @@
       }, 1000);
     }
     
-    // Update scoreboard (score, questions attempted, player's name, and achievement badge)
+    // Update scoreboard and display player's name and achievement badge.
     function updateScoreboard() {
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
       document.getElementById("playerDisplay").innerText = `Welcome, ${playerName}!`;
-      // Show achievement badge if 10 consecutive correct answers achieved.
+      // Update achievement badge based on current consecutive correct count
       if (consecutiveCorrect >= 10) {
-        document.getElementById("achievement").innerText = "🏆 Achievement Unlocked: 10 in a Row!";
+        let achievementLevel = Math.floor(consecutiveCorrect / 10) * 10;
+        if (achievementLevel > 100) achievementLevel = 100;
+        document.getElementById("achievement").innerText = `🏆 Achievement Unlocked: ${achievementLevel} in a Row!`;
       } else {
         document.getElementById("achievement").innerText = "";
       }
     }
     
-    // Adaptive difficulty: determines the number range based on consecutive correct answers.
+    // Adaptive difficulty: determine the number range based on consecutive correct answers.
     function getNumberRange() {
       if (consecutiveCorrect >= 10) {
         return 100; // range: 1 to 100
@@ -429,6 +432,9 @@
       if (userAnswer === correctAnswer) {
         score++;
         consecutiveCorrect++;
+        if (consecutiveCorrect > maxConsecutive) {
+          maxConsecutive = consecutiveCorrect;
+        }
         messageEl.innerText = "Correct! Great job! 😊";
         messageEl.style.color = "green";
         questionsCompleted++;
@@ -436,7 +442,7 @@
         setTimeout(generateProblem, 1000);
       } else {
         questionAttempts++;
-        consecutiveCorrect = 0; // Reset consecutive count on mistake
+        consecutiveCorrect = 0; // Reset consecutive correct count on mistake
         if (questionAttempts < 3) {
           messageEl.innerText = `Incorrect. Try again! (${questionAttempts} of 3 attempts used) 😞`;
           messageEl.style.color = "red";
@@ -494,13 +500,20 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
-    // Log the session details (date, player's name, score, questions attempted) in localStorage.
+    // Log the session details (including achievement) in localStorage.
     function logSession() {
+      let achievement = "None";
+      if (maxConsecutive >= 10) {
+        let achievementLevel = Math.floor(maxConsecutive / 10) * 10;
+        if (achievementLevel > 100) achievementLevel = 100;
+        achievement = `${achievementLevel} in a Row!`;
+      }
       const sessionLog = {
         date: new Date().toLocaleString(),
         player: playerName,
         score: score,
-        questionsAttempted: questionsCompleted
+        questionsAttempted: questionsCompleted,
+        achievement: achievement
       };
       let logs = JSON.parse(localStorage.getItem('sessionLogs')) || [];
       logs.push(sessionLog);
@@ -520,7 +533,8 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
           displayHTML += `<p><strong>Player:</strong> ${log.player}<br>
 <strong>Date:</strong> ${log.date}<br>
 <strong>Score:</strong> ${log.score}<br>
-<strong>Questions:</strong> ${log.questionsAttempted}</p><hr>`;
+<strong>Questions:</strong> ${log.questionsAttempted}<br>
+<strong>Achievement:</strong> ${log.achievement}</p><hr>`;
         });
       }
       return displayHTML;
@@ -540,7 +554,8 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
             displayHTML += `<p><strong>Date:</strong> ${log.date}<br>
 <strong>Player:</strong> ${log.player}<br>
 <strong>Score:</strong> ${log.score}<br>
-<strong>Questions:</strong> ${log.questionsAttempted}</p><hr>`;
+<strong>Questions:</strong> ${log.questionsAttempted}<br>
+<strong>Achievement:</strong> ${log.achievement}</p><hr>`;
           });
         }
         displayHTML += buildLeaderboard();
@@ -553,11 +568,12 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       }
     }
     
-    // Reset the session: reinitialize state, timer, and UI elements.
+    // Reset the session: reinitialize state, timer, UI elements, and achievement trackers.
     function resetSession() {
       questionsCompleted = 0;
       score = 0;
       consecutiveCorrect = 0;
+      maxConsecutive = 0;
       remainingTime = sessionDuration;
       document.getElementById("answer").disabled = false;
       document.getElementById("helpButton").disabled = false;
