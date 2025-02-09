@@ -1,6 +1,30 @@
-body{
-  padding: 25px;
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  background: #f0f0f0;
 }
-.title {
-	color: #5C6AC4;
+
+h1 {
+  margin-bottom: 10px;
+}
+
+#mapContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+/* Ensure the injected SVG scales responsively */
+#mapContainer svg {
+  width: 100%;
+  height: auto;
+}
+
+#info {
+  margin-top: 20px;
+  font-size: 18px;
 }

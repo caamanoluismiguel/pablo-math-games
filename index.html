@@ -54,7 +54,7 @@
       border-radius: 5px;
     }
     
-    /* Unified Button Style (applied via the button selector) */
+    /* Unified Button Style */
     button, #modalContent button {
       padding: 10px 20px;
       font-size: 16px;
@@ -174,18 +174,18 @@
       border: none;
       border-radius: 5px;
     }
-    /* The Submit Answer button is always visible */
+    /* Always-visible Submit Answer Button */
     #submitButton {
       display: inline-block;
     }
-    /* Container for the main 4 buttons */
+    /* Container for the 4 main buttons */
     .button-container {
       display: flex;
       justify-content: space-evenly;
       flex-wrap: wrap;
       margin-top: 10px;
     }
-    /* Container for the secondary button ("More Help") */
+    /* Container for the secondary "More Help" button */
     .secondary-button-container {
       text-align: center;
       margin-top: 10px;
@@ -226,6 +226,7 @@
       border-radius: 5px;
       color: white;
     }
+    
     /* Fade In Animation */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -593,7 +594,7 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       }
     });
     
-    // The "Submit Answer" button already calls checkAnswer() on click.
+    // The "Submit Answer" button calls checkAnswer() on click.
     // The session starts only after the user clicks "Start" in the modal.
   </script>
 </body>
