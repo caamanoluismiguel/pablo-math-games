@@ -18,8 +18,8 @@
     }
     a { text-decoration: none; }
     
-    /* Modal Styles */
-    #startModal {
+    /* Modal Styles for Start and End */
+    #startModal, #endModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -31,7 +31,9 @@
       align-items: center;
       z-index: 1000;
     }
-    #modalContent {
+    #startModal { display: flex; }
+    #endModal { display: none; }
+    #modalContent, #endModalContent {
       background: #fff;
       padding: 30px;
       border-radius: 10px;
@@ -39,7 +41,7 @@
       max-width: 400px;
       width: 90%;
     }
-    #modalContent h2 {
+    #modalContent h2, #endModalContent h2 {
       margin-top: 0;
       font-size: 2em;
       font-weight: bold;
@@ -54,8 +56,8 @@
       border-radius: 5px;
     }
     
-    /* Unified Button Style for all action buttons */
-    button, #modalContent button {
+    /* Unified Button Style */
+    button, #modalContent button, #endModalContent button {
       padding: 10px 20px;
       font-size: 16px;
       background-color: #FFA500;
@@ -65,7 +67,7 @@
       cursor: pointer;
       margin: 10px;
     }
-    button:hover, #modalContent button:hover {
+    button:hover, #modalContent button:hover, #endModalContent button:hover {
       background-color: #e69500;
     }
     button:disabled {
@@ -84,6 +86,26 @@
     }
     #resetButton:hover {
       background-color: darkgray;
+    }
+    
+    /* Confetti CSS */
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      opacity: 0.8;
+      pointer-events: none;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(600px) rotate(360deg);
+        opacity: 0;
+      }
     }
     
     /* Top Section (Hero) */
@@ -178,16 +200,11 @@
     #submitButton {
       display: inline-block;
     }
-    /* Container for the 4 main buttons */
+    /* Container for the main buttons */
     .button-container {
       display: flex;
       justify-content: space-evenly;
       flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    /* Container for the secondary "More Help" button */
-    .secondary-button-container {
-      text-align: center;
       margin-top: 10px;
     }
     .message, .help-message {
@@ -246,6 +263,15 @@
     </div>
   </div>
   
+  <!-- End Modal -->
+  <div id="endModal">
+    <div id="endModalContent">
+      <h2>Thank You for Practicing!</h2>
+      <p>"Consistent practice leads to mastery. Keep going!"</p>
+      <button onclick="newSession()">Start New Session</button>
+    </div>
+  </div>
+  
   <!-- Top Section (Hero) -->
   <section id="topSection">
     <div class="logo">√</div>
@@ -268,25 +294,20 @@
     </div>
     
     <div class="problem-container">
-      <p id="problem">Press ENTER after typing your answer to begin!</p>
+      <!-- Removed default instruction message -->
+      <p id="problem"></p>
       <div class="input-container">
         <label for="answer"><strong>Your Answer:</strong></label><br>
         <input type="number" id="answer" placeholder="Type a number" autocomplete="off">
       </div>
-      <!-- Button Container for the 4 main buttons -->
+      <!-- Button Container for the main buttons -->
       <div class="button-container">
         <button id="submitButton" onclick="checkAnswer()">Submit Answer</button>
         <button id="helpButton" onclick="showHelp()">Help</button>
-        <button id="resetButton" onclick="resetSession()" disabled>Reset Session</button>
         <button id="logsButton" onclick="toggleSessionLogs()">Show Session Logs</button>
-      </div>
-      <!-- Secondary Button Container for "More Help" -->
-      <div class="secondary-button-container">
-        <button id="moreHelpButton" onclick="showAlternateHelp()" style="display: none;">More Help</button>
       </div>
       <p class="message" id="message"></p>
       <p class="help-message" id="helpMessage"></p>
-      <p class="help-message" id="altHelpMessage"></p>
     </div>
     
     <!-- Div to display session logs and leaderboard -->
@@ -294,8 +315,11 @@
     <div id="leaderboard"></div>
   </section>
   
+  <!-- Audio element for success sound -->
+  <audio id="successSound" src="success.mp3"></audio>
+  
   <script>
-    // Global variables for player's name, consecutive correct count, and max consecutive correct achieved
+    // Global variables for player's name, consecutive correct count, and max consecutive achieved
     let playerName = "";
     let consecutiveCorrect = 0;
     let maxConsecutive = 0;
@@ -317,8 +341,8 @@
     
     // Returns an interpolated color between green and red based on ratio (1 = full time left)
     function getProgressColor(ratio) {
-      const startColor = { r: 50, g: 205, b: 50 }; // green (#32cd32)
-      const endColor = { r: 255, g: 0, b: 0 };      // red (#FF0000)
+      const startColor = { r: 50, g: 205, b: 50 };
+      const endColor = { r: 255, g: 0, b: 0 };
       let r = Math.round(startColor.r + (endColor.r - startColor.r) * (1 - ratio));
       let g = Math.round(startColor.g + (endColor.g - startColor.g) * (1 - ratio));
       let b = Math.round(startColor.b + (endColor.b - startColor.b) * (1 - ratio));
@@ -356,7 +380,6 @@
       document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
       document.getElementById("questionDisplay").innerText = `Questions: ${questionsCompleted}`;
       document.getElementById("playerDisplay").innerText = `Welcome, ${playerName}!`;
-      // Update achievement badge based on current consecutive correct count
       if (consecutiveCorrect >= 10) {
         let achievementLevel = Math.floor(consecutiveCorrect / 10) * 10;
         if (achievementLevel > 100) achievementLevel = 100;
@@ -366,53 +389,78 @@
       }
     }
     
-    // Adaptive difficulty: determine the number range based on consecutive correct answers.
+    // Adaptive difficulty: determine number range based on consecutive correct answers.
     function getNumberRange() {
       if (consecutiveCorrect >= 10) {
-        return 100; // range: 1 to 100
+        return 100;
       } else if (consecutiveCorrect >= 5) {
-        return 50;  // range: 1 to 50
+        return 50;
       } else {
-        return 20;  // range: 1 to 20
+        return 20;
       }
     }
     
-    // Generate a new math problem and reset per-question state.
+    // Generate a new math problem. Supports simple and compound operations.
     function generateProblem() {
       if (remainingTime <= 0) return;
       
       document.getElementById("message").innerText = "";
       document.getElementById("helpMessage").innerHTML = "";
-      document.getElementById("altHelpMessage").innerHTML = "";
       document.getElementById("answer").value = "";
-      document.getElementById("moreHelpButton").style.display = "none";
       questionAttempts = 0;
       
-      const maxNumber = getNumberRange();
-      currentNum1 = Math.floor(Math.random() * maxNumber) + 1;
-      currentNum2 = Math.floor(Math.random() * maxNumber) + 1;
+      const isCompound = Math.random() < 0.5;
       
-      const operators = ["+", "-", "*"];
-      currentOperator = operators[Math.floor(Math.random() * operators.length)];
-      
-      let problemText = "";
-      if (currentOperator === "+") {
-        correctAnswer = currentNum1 + currentNum2;
-        problemText = `${currentNum1} + ${currentNum2} = ?`;
-      } else if (currentOperator === "-") {
-        if (currentNum1 < currentNum2) {
-          correctAnswer = currentNum2 - currentNum1;
-          problemText = `${currentNum2} - ${currentNum1} = ?`;
-        } else {
-          correctAnswer = currentNum1 - currentNum2;
-          problemText = `${currentNum1} - ${currentNum2} = ?`;
+      if (isCompound) {
+        let compoundValid = false;
+        let expr, pattern, A, B, C;
+        while (!compoundValid) {
+          const patterns = ["A + B * C", "A - B * C", "A * B + C", "A * B - C"];
+          pattern = patterns[Math.floor(Math.random() * patterns.length)];
+          const range = getNumberRange();
+          A = Math.floor(Math.random() * range) + 1;
+          B = Math.floor(Math.random() * range) + 1;
+          C = Math.floor(Math.random() * range) + 1;
+          expr = pattern.replace(/A/g, A).replace(/B/g, B).replace(/C/g, C);
+          if (pattern === "A + B * C") {
+            correctAnswer = A + B * C;
+          } else if (pattern === "A - B * C") {
+            correctAnswer = A - B * C;
+          } else if (pattern === "A * B + C") {
+            correctAnswer = A * B + C;
+          } else if (pattern === "A * B - C") {
+            correctAnswer = A * B - C;
+          }
+          if (correctAnswer >= 0) {
+            compoundValid = true;
+          }
         }
-      } else if (currentOperator === "*") {
-        correctAnswer = currentNum1 * currentNum2;
-        problemText = `${currentNum1} * ${currentNum2} = ?`;
+        document.getElementById("problem").innerText = expr + " = ?";
+      } else {
+        const range = getNumberRange();
+        currentNum1 = Math.floor(Math.random() * range) + 1;
+        currentNum2 = Math.floor(Math.random() * range) + 1;
+        const operators = ["+", "-", "*"];
+        currentOperator = operators[Math.floor(Math.random() * operators.length)];
+        
+        let problemText = "";
+        if (currentOperator === "+") {
+          correctAnswer = currentNum1 + currentNum2;
+          problemText = `${currentNum1} + ${currentNum2} = ?`;
+        } else if (currentOperator === "-") {
+          if (currentNum1 < currentNum2) {
+            correctAnswer = currentNum2 - currentNum1;
+            problemText = `${currentNum2} - ${currentNum1} = ?`;
+          } else {
+            correctAnswer = currentNum1 - currentNum2;
+            problemText = `${currentNum1} - ${currentNum2} = ?`;
+          }
+        } else if (currentOperator === "*") {
+          correctAnswer = currentNum1 * currentNum2;
+          problemText = `${currentNum1} * ${currentNum2} = ?`;
+        }
+        document.getElementById("problem").innerText = problemText;
       }
-      
-      document.getElementById("problem").innerText = problemText;
     }
     
     // Check the user's answer when ENTER or the "Submit Answer" button is pressed.
@@ -437,12 +485,16 @@
         }
         messageEl.innerText = "Correct! Great job! 😊";
         messageEl.style.color = "green";
+        document.getElementById("successSound").play();
+        if (consecutiveCorrect % 10 === 0) {
+          triggerConfetti();
+        }
         questionsCompleted++;
         updateScoreboard();
         setTimeout(generateProblem, 1000);
       } else {
         questionAttempts++;
-        consecutiveCorrect = 0; // Reset consecutive correct count on mistake
+        consecutiveCorrect = 0;
         if (questionAttempts < 3) {
           messageEl.innerText = `Incorrect. Try again! (${questionAttempts} of 3 attempts used) 😞`;
           messageEl.style.color = "red";
@@ -456,48 +508,46 @@
       }
     }
     
-    // Show a simple, kid-friendly help explanation for the current problem.
+    // Show a help explanation for the current problem.
     function showHelp() {
       if (remainingTime <= 0) return;
       let helpText = "";
+      if (document.getElementById("problem").innerText.includes("*") &&
+          (document.getElementById("problem").innerText.includes("+") ||
+           document.getElementById("problem").innerText.includes("-"))) {
+        helpText += "Tip: In compound operations, do multiplication before addition or subtraction!<br><br>";
+      }
       
       if (currentOperator === "+") {
-        helpText = `Addition Help:<br>
+        helpText += `Addition Help:<br>
 Imagine you have one pile with ${currentNum1} items and another with ${currentNum2} items. Put them together to get the total.`;
       } else if (currentOperator === "-") {
-        helpText = `Subtraction Help:<br>
+        helpText += `Subtraction Help:<br>
 Imagine you have ${currentNum1} items and you remove ${currentNum2} of them. The items left are your answer.`;
       } else if (currentOperator === "*") {
-        helpText = `Multiplication Help:<br>
+        helpText += `Multiplication Help:<br>
 Think of it as making groups. For <strong>${currentNum1} × ${currentNum2}</strong>, imagine having ${currentNum1} groups with ${currentNum2} items in each. Add all the items together.`;
       }
       
       document.getElementById("helpMessage").innerHTML = helpText;
-      document.getElementById("moreHelpButton").style.display = "inline-block";
     }
     
-    // Show an alternate visual explanation chosen at random.
-    function showAlternateHelp() {
-      if (remainingTime <= 0) return;
-      let altHelpText = "";
-      
-      if (currentOperator === "+") {
-        altHelpText = `Alternate Addition Help:<br>
-Imagine a number line starting at ${currentNum1}; move right by ${currentNum2} steps. The number you land on is your total.`;
-      } else if (currentOperator === "-") {
-        altHelpText = `Alternate Subtraction Help:<br>
-Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count what remains.`;
-      } else if (currentOperator === "*") {
-        const altHelpOptions = [
-          `Imagine ${currentNum1} baskets, each with ${currentNum2} apples. Count the apples basket by basket.`,
-          `Picture ${currentNum1} rows of stars with ${currentNum2} stars each. Add up the stars in each row.`,
-          `Think of ${currentNum1} groups of balloons, each holding ${currentNum2} balloons. Count them group by group.`
-        ];
-        let randomIndex = Math.floor(Math.random() * altHelpOptions.length);
-        altHelpText = `Alternate Multiplication Help:<br>` + altHelpOptions[randomIndex];
+    // Trigger a confetti effect using plain JavaScript and CSS.
+    function triggerConfetti() {
+      const confettiCount = 30;
+      const colors = ['#FFC107', '#FF5722', '#4CAF50', '#2196F3', '#9C27B0'];
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        const duration = 2 + Math.random() * 2;
+        confetti.style.animationDuration = duration + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => {
+          confetti.remove();
+        }, duration * 1000);
       }
-      
-      document.getElementById("altHelpMessage").innerHTML = altHelpText;
     }
     
     // Log the session details (including achievement) in localStorage.
@@ -577,16 +627,20 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       remainingTime = sessionDuration;
       document.getElementById("answer").disabled = false;
       document.getElementById("helpButton").disabled = false;
-      document.getElementById("moreHelpButton").disabled = false;
       document.getElementById("resetButton").disabled = true;
       updateScoreboard();
       updateTimeDisplay();
       document.getElementById("message").innerText = "";
       document.getElementById("helpMessage").innerHTML = "";
-      document.getElementById("altHelpMessage").innerHTML = "";
       clearInterval(timerInterval);
       startTimer();
       generateProblem();
+    }
+    
+    // Function to start a new session from the end modal.
+    function newSession() {
+      document.getElementById("endModal").style.display = "none";
+      resetSession();
     }
     
     // Function to start the session after the user enters their name.
@@ -603,15 +657,21 @@ Picture having ${currentNum1} cookies and eating ${currentNum2} of them. Count w
       generateProblem();
     }
     
+    // When the session ends, show the end modal with a thank-you message and a button to start a new session.
+    function endSession() {
+      clearInterval(timerInterval);
+      document.getElementById("answer").disabled = true;
+      document.getElementById("helpButton").disabled = true;
+      logSession();
+      document.getElementById("endModal").style.display = "flex";
+    }
+    
     // Listen for the ENTER key on the answer input field.
     document.getElementById("answer").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         checkAnswer();
       }
     });
-    
-    // The "Submit Answer" button calls checkAnswer() on click.
-    // The session starts only after the user clicks "Start" in the modal.
   </script>
 </body>
 </html>
